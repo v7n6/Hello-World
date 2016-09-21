@@ -1,0 +1,82 @@
+symbolic link
+------------
+ln -s <actual folder> <sym folder>
+ln -s ~/CostBasis/reconciler/releases/cb-reports-1.17 ~/CostBasis/reconciler/current
+
+search and replace
+----------------------
+:%s/old pattern/new pattern/g
+sed -i 's/GSIB/MCBO/g' <file name> - replace GSIC with MCBO
+
+extract lines from file
+------------------------
+cat <file name> | awk '/CSWI/ {print}' > test.txt - extract line having CSWI keyword
+
+disk space
+-------
+du -skh : to find the current folder size
+du -skh * : to find size of all folders under current folder
+find . -type f -print|xargs ls -l | sort -r -n -k 5,5 | head -50 
+du -hsx * | sort -rh | head -10 
+df -h
+find . -type f -print0 | xargs -0 du | sort -n | tail -10 | cut -f2 | xargs -I{} du -sh {}  - top 100 files
+du -a . | sort -n -r | head -n 20 
+
+converting file created in windows to unix format
+--------------------------------------------------
+dos2unix -k -o filename
+
+to run a db2 query in a file
+-----------------------------
+db2 -tf <filename> > <resultFileName>
+
+color format in prod
+-------------------
+alias l='ls -ltrh --color';alias ls='ls --color';alias grep='grep --color=auto';alias d='cd ..; ls';export PS1="\e[1;31m[\u@\h:\w]\$ \e[m ";export PS1="\[$(tput bold)\]\[$(tput setaf 3)\]\! \[$(tput setaf 1)\][\u@\h:\[$(tput setaf 3)\]\w\[$(tput setaf 1)\]]\\$ \[$(tput sgr0)\]"
+
+color format in qa
+-------------------
+alias l='ls -ltrh --color';alias grep='grep --color=auto';alias ls='ls --color';alias d='cd ..; ls';export PS1="\[$(tput bold)\]\[$(tput setaf 2)\]\! \[$(tput setaf 3)\][\u@\h:\[$(tput setaf 4)\]\w\[$(tput setaf 3)\]]\\$ \[$(tput sgr0)\]"
+
+zipping/unzipping files
+------------------
+unzip - 7za e <filename>
+zip   - 7z a <zip_file_name> <file name>
+
+uptime - Tell how long the system has been running
+w - Show who is logged on and what they are doing.
+
+find + copy
+---------------
+eg: copy all the grand total files
+find ./FULFILLMENT_20150209_0*/raw_pdf/*GRAND*.pdf -print0 | xargs -0 -I {} cp {} grandtotal/
+
+less
+-------
+unlike more cmd, we can go up and down with the file opened and less does not read the entire file before opening the file
+
+env
+--
+prints all the env variables set
+
+pushd popd
+-----------
+pushd <dir> - puts the dir in the stack
+popd - changes to the dir in the beginning of the stack
+
+inode usage
+----------------
+cmd to check how much inode is used: df -i
+find list of folders with their inodes count: find / -xdev -printf '%h\n' | sort | uniq -c | sort -k 1 -n
+
+untar a file
+----------------
+tar xzvf /tmp/<filename>
+
+disk usage
+------------
+df -h :disk free
+df . -k
+du -hsx * | sort -rh | head -10 :disk usage
+
+
