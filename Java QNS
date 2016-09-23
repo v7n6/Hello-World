@@ -1,0 +1,443 @@
+Q1 : The output of this code is binary representation of which integer(0-7)?
+package com.gs.opstech.learning.java.concepts;
+public class Exercise1 {
+    public static void main(String[] args) {
+        int x = 0;                     increment(x);            System.out.print(x);
+        int y = 0;                     incrementInteger(y);     System.out.print(y); 
+        Integer z = new Integer(0);    incrementInteger(z);     System.out.print(z);
+    }
+     
+    public static void increment(int i) { i++; }
+     
+    public static void incrementInteger(Integer i) { i++; }
+}
+Q1 Points to consider: Think carefully about you answer and then try it out
+
+ 
+
+Q2: What's the output of this program?
+public class Excercise2 {
+     
+    public static void main(String[] args) {
+        String[] l1 = {"a", "b"};
+        String[] l2 = {"x", "y"};
+        swap(l1, l2);
+        System.out.println(Arrays.toString(l1) + Arrays.toString(l2));
+    }
+    public static <T> void swap(T[] p, T[] q) {
+        T[] temp =  p;
+        p = q;
+        q = temp;
+    }
+}
+Q2 Points to consider:
+
+Method swap , swaps the references. Will the impact of this would be visible to the caller?
+
+ 
+
+Q3: What would be the output of this method and why?
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+public class Excercise3 {
+    public static void main(String[] args) {
+        String[] cities = {"Bangalore", "London", "Newyork"};
+        reverse(cities);
+        System.out.println(Arrays.toString(cities));
+    }
+ 
+    //Reverse by swapping ith element from beginning with ith element from the end of the array
+    public static <T> void reverse(T[] arr) {
+        for (int i = 0; i < arr.length; i++) {
+            swap(arr, i, arr.length - i - 1);
+        }
+    }
+ 
+    //swaps element at index i with element at index j
+    public static <T> void swap(T[] arr, int i, int j) {
+        T temp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = temp;
+    }
+}
+Q3: Points to consider:
+
+This method tries to reverse an array by in-place swapping of elements. It doesn't return it. Would a call to this method lead to reversing the contents of the array in caller?
+After answering the question try running it. Does it behave as expected?
+ 
+
+Q4: How does DriverManager know which driver to use for which database?
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+public static void main(String[] args) throws Exception {
+        // initialize
+        Connection db2Con = connect("com.ibm.db2.jcc.DB2Driver", db2URL, db2user, db2Pw);
+        Connection sybaseCon = connect("com.sybase.jdbc3.jdbc.SybDriver", iqURL, iquser, iqPw);
+        transferData(db2Con, sybaseCon);
+    }
+    private Connection connect(String jdbcClassName, String url, String user, String password) 
+            throws SQLException, ClassNotFoundException {
+        Class.forName(jdbcClassName);
+        return DriverManager.getConnection(url, user, password);
+    }
+Q4 Points to consider: DriverManager can't possibly know about all the database drivers in the world. If it did, you can write a new Driver and this won't hold true any longer. So how did it know that DB2Driver should be used to connect to DB2 and not the SybDriver
+
+ 
+
+
+
+Q5: Is private instance member of Person A accessible to Person B in Person class?
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+public class Person {
+    private static final AtomicInteger uidSequence = new AtomicInteger(0);
+     
+    private int personId;
+    private String name;
+    private int age;
+     
+    public Person(String name, int age) {
+        this.name = name;
+        this.age = age;
+        personId = uidSequence.getAndIncrement();
+    }
+     
+    //Returns true if this Person is older than supplied Person
+    public boolean isElder(Person other) {
+        return age > other.age;
+    }
+     
+    //getter/setter s
+}
+Q5: Points to consider: We know that private static member like uidSequence is private to the class but what about private instance member like age? Is it private to the Person object whose member it is? If yes, line 16 should give compilation error.
+
+ 
+
+Q6 : Can a concrete method of a class call an abstract method of same class?
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+public abstract class SimplePolygon {
+     
+    public abstract double[] getSides();
+     
+    public boolean isEquilateral() {
+        double[] sides = getSides();
+        for (int i = 1; i < sides.length; i++) {
+            if (sides[i] != sides[i-1]) return false;          
+        }
+        return true;
+    }
+ 
+    public int getSumOfInternalAngles() {
+        int noOfSides = getSides().length;
+        return 180 * noOfSides-2;
+    }
+}
+Q6 Points to consider: In this example, a number of properties of a SimplePolygon are determined by the number of its sides. We don't want to implement these properties each time for a Triangle, Rectangle and so on. Here we have implemented these methods in abstract base class. The problem is that the methods isEquilateral and getSumOfInternalAngles call an abstract method getSides.
+
+Will this code give compilation error at line 6 and 14. If yes, how would you fix it? If not, how would it work?
+
+ 
+
+	Note
+For the following questions we will define a concept of Polygon and the questions will be based on its implementation.
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+public abstract class Polygon {
+        //Returns list of coordinates of a Polygon
+        public abstract List<Coordinate> getVertices();
+         
+        //Returns area of polygon a Polygon
+        public abstract double computeArea() throws GeometricException;
+         
+        //Returns true if the point is in the polygon
+        public abstract boolean inInPolygon(Coordinate point);
+         
+        //Returns a point equidistant from all vertices, throws NonRelevantConceptException
+        //if the polygon has no such point
+        public abstract Coordinate getCenter() throws NonRelevantConceptException;
+}
+ 
+//---------------------------------------------------------------------
+public class Coordinate {  // Implement
+}
+ 
+public class CartesianCoordinate extends Coordinate { // Implement
+}
+ 
+//---------------------------------------------------------------------
+ 
+ 
+ 
+//Base class of all exceptions related to geometric operations
+public static class GeometricException extends Exception {}
+    
+//Exception to indicate that the concept in question is not relevant in this particular case
+public static class NonRelevantConceptException extends GeometricException {}
+Q7: While overriding a method can we add/remove/change Exceptions of overridden method
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+public class StarPolygon extends Polygon {
+        public double computeArea() throws NonRelevantConceptException { 
+            throw new NonRelevantConceptException();
+        }
+        // Other methods
+    }
+ 
+    public class Triangle extends Polygon {
+        @Override
+        public double computeArea() throws MalformedTriangleException { 
+            //implement
+        }
+        // Other methods
+    }
+ 
+    public class EquilateralTriangle extends Triangle {
+        @Override
+        public double computeArea() { 
+            //implement
+        }
+       // Other methods
+    }
+ 
+    /*Base class of all exceptions related to geometric operations*/
+    public class MalformedTriangleException extends Exception {}
+Q7 Points to consider:
+
+A StarPolygon is Polygon. It overrides computeArea method and throws NonRelevantConceptException which is a subclass of GeometricException. Will it compile?
+A Triangle is a Polygon.  It overrides computeArea method and throws MalformedTriangleException which is NOT a subclass of GeometricException. Will it compile?
+A EquilateralTriangle is a Triangle and Triangle is a Polygon. EquilateralTriangle overrides computeArea method and DOES NOT throw any exception. Will it compile?
+ 
+
+
+
+Q8: While overriding methods can return type be different from overridden method?
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+public class Triangle extends Polygon {
+    
+   @Override
+   public CartesianCoordinate getCenter() throws NonRelevantConceptException { //implement
+   }
+   @Override
+   public List<CartesianCoordinate> getVertices() { //implement
+   }  
+ 
+   // Other methods
+}
+
+Q8 Points to consider:
+ A Triangle is a Polygon. The Polygon getCenter returns Coordinate. Triangle overrides this method but returns CartesianCoordinate. Will it compile?
+ A Triangle is a Polygon. The Polygon getVertices  returns List<Coordinate>. Triangle overrides this method but returns List<CartesianCoordinate>. Will it compile?
+If we changed Polygon.getVertices to return an array instead of List (i.e. Coordinate[]) and similarly changed Triangle to return CartesianCoordinate[], will it compile?
+What changes will you have to do in Polygon.getVertices so that Triangle.getVertices can return List<CartesianCoordinate>
+What is this concept called?
+ 
+
+Q9: While overriding methods can you replace argument with its subclass?
+1
+2
+3
+4
+5
+6
+7
+8
+public static class Triangle extends Polygon {
+        @Override
+        public boolean inInPolygon(CartesianCoordinate point) {
+            // TODO Implement
+        }
+ 
+        // Other methods
+    }
+Q9: Points to consider:
+ A Triangle is a Polygon. The Polygon inInPolygon accepts Coordinate. Triangle overrides this method but accepts CartesianCoordinate. Will it compile?
+If we remove @Override from the method, will it compile? What is the name of this concept?
+How can we implement these classes in a way that allows different types of Coordinate implementation.
+. 
+ 
+Q10: In which cases the following implementation of factorial fail to return correct value and why?
+1
+2
+3
+public static long factorial(int n) {
+        return n * factorial(--n);
+    }
+
+Q10: In which cases the following implementation of factorial fail to return correct value and why?
+ Possible Answers
+None.
+Negative integers
+Zero
+Negative , zero 
+Negative, zero and large positive integers
+All integers
+ 
+
+
+
+Q11: Will this method correctly return fibonacci(n) for non negative integers?
+1
+2
+3
+public static long fibonacci(int n) {
+    return (n == 0 || n == 1) ? n : fibonacci(--n) + fibonacci(--n);
+}
+Q11 Points to consider:
+
+It returns int n for 0,1 whereas the return type is long. Will it cause compilation error?
+The fibonacci series is defined by F(n) = F(n-1) + F(n-2) with seed value F(0) = 0, F(1) = 1 . Is the implementation conforms to this definition?
+How many times fibonacci(m) will be computed where 0 <=m < n when  we call fibonacci(n)? 
+How will this method behave for large value of N and how will you fix it?
+ 
+Q1 : 0
+Q2: unchanged
+Q3: unchanged. But the reason may be different from what you think. The loop has the answer
+Q4: Class.forName has the magic!
+Q5: Yes.
+
+From Java Language spec: Determining accessibility: if the member or constructor is declared private, then access is permitted if and only if it occurs within the body of the top level class (§7.6) that encloses the declaration of the member or constructor.
+Q6 : Yes. That's precisely the point of abstract classes
+Q7: Add? no, remove? yes, change? yes. Checked exception in throws clause of overriding method can be subtype of exception thrown in overridden method .
+
+ From Java Language spec: Requirements in Overriding and Hiding suppose that B is a class or interface, and A is a superclass or superinterface of B, and a method declaration n in B overrides or hides a method declaration m in A. Then:
+
+If n has a throws clause that mentions any checked exception types, then m must have a throws clause, or a compile-time error occurs.
+For every checked exception type listed in the throws clause of n, that same exception class or one of its supertypes must occur in the erasure (§4.6) of the throwsclause of m; otherwise, a compile-time error occurs.
+Q8: Yes, overridden method can return different type but conditions apply#
+
+covariant return types are allowed. 
+
+  From Java Language spec: If a method declaration d1 with return type R1 overrides or hides the declaration of another method d2 with return type R2, then d1 must be return-type-substitutable (§8.4.5) for d2,
+
+Q9: No.
+
+From Java Language spec: Overriding: An instance method m1, declared in class C, overrides another instance method m2, declared in class A iff all of the following are true:
+C is a subclass of A.
+The signature of m1 is a subsignature (§8.4.2) of the signature of m2.
+
+Q10: Doesn't work for any integer. 
+Q11: Yes (but don't write such code!) 
