@@ -1,5 +1,3 @@
-D05820.corp.dir.ameren.com
-
 symbolic link
 ------------
 ln -s <actual folder> <sym folder>
